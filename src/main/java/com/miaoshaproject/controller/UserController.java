@@ -1,6 +1,8 @@
 package com.miaoshaproject.controller;
 
 import com.miaoshaproject.controller.viewobject.UserVO;
+import com.miaoshaproject.error.BusinessException;
+import com.miaoshaproject.error.EmBusinessError;
 import com.miaoshaproject.response.CommonReturnType;
 import com.miaoshaproject.service.UserService;
 import com.miaoshaproject.service.model.UserModel;
@@ -21,9 +23,14 @@ public class UserController {
 
   @RequestMapping("/get")
   @ResponseBody
-  public CommonReturnType getUser(@RequestParam(name="id") Integer id) {
+  public CommonReturnType getUser(@RequestParam(name="id") Integer id) throws BusinessException {
     //调用service服务获取对应id的用户对象并返回给前端
     UserModel userModel = userService.getUserByID(id);
+
+    //若获取的对应用户信息不存在
+    if (userModel == null) {
+      throw new BusinessException(EmBusinessError.USER_NOT_EXIST);
+    }
 
     //将核心领域模型用户对象转化为可供UI使用的viewobject
     UserVO userVO = convertFromModel(userModel);
