@@ -73,7 +73,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserModel validateLogin(String telphone, String encryptPassword) throws BusinessException {
     //通过用户的手机获取用户信息
-    UserDO userDO = userDOMapper.selectByTelphone(telphone);
+    UserDO userDO = null;
+    try {
+      userDO = userDOMapper.selectByTelphone(telphone);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     if (userDO == null) {
       throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
     }
